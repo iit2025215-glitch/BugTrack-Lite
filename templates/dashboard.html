@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BugTrack Lite | Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <aside class="sidebar">
+            <h2>BugTrack <span>Lite</span></h2>
+
+            <nav>
+                <a href="/" class="active">Dashboard</a>
+                <a href="#">All Issues</a>
+                <a href="#">My Issues</a>
+                <a href="#">Projects</a>
+                <a href="#">Settings</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                Software Bug Tracking System
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Welcome back! Here's your project overview.</p>
+                </div>
+
+                <button class="report-btn">
+                    + Report Bug
+                </button>
+            </header>
+
+            <section class="stats">
+
+                <div class="stat-card">
+                    <p>Total Issues</p>
+                    <h2>24</h2>
+                    <span>Across all projects</span>
+                </div>
+
+                <div class="stat-card">
+                    <p>Open Issues</p>
+                    <h2>10</h2>
+                    <span>Needs attention</span>
+                </div>
+
+                <div class="stat-card">
+                    <p>In Progress</p>
+                    <h2>8</h2>
+                    <span>Currently being fixed</span>
+                </div>
+
+                <div class="stat-card">
+                    <p>Resolved</p>
+                    <h2>6</h2>
+                    <span>Successfully fixed</span>
+                </div>
+
+            </section>
+
+            <section class="issues-section">
+
+                <div class="section-header">
+                    <div>
+                        <h2>Recent Issues</h2>
+                        <p>Latest reported software bugs</p>
+                    </div>
+
+                    <button class="filter-btn">
+                        Filter Issues
+                    </button>
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Issue</th>
+                                <th>Project</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for bug in bugs %}
+                            <tr>
+                                <td>
+                                    <strong>#{{ bug.id }}</strong>
+                                    {{ bug.title }}
+                                </td>
+
+                                <td>{{ bug.project }}</td>
+
+                                <td>
+                                    <span class="severity {{ bug.severity|lower }}">
+                                        {{ bug.severity }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="status {{ bug.status|lower|replace(' ', '-') }}">
+                                        {{ bug.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            <footer>
+                BugTrack Lite © 2026
+            </footer>
+
+        </main>
+
+    </div>
+
+</body>
+</html>
