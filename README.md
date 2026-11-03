@@ -186,11 +186,11 @@ Potential improvements for future versions include:
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Authors
 
-**Shreyansh Raj Singh**
-**Avaneesh Verma**
-**Roshan**
+- **Shreyansh Raj Singh**
+- **Avaneesh Verma**
+- **Roshan**
 
 GitHub: [@iit2025215-glitch](https://github.com/iit2025215-glitch)
 
