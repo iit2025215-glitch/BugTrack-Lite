@@ -1,140 +1,451 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BugTrack Lite — Issue Dashboard</title>
 
-    <title>BugTrack Lite | Dashboard</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
 </head>
 
 <body>
+<div class="app-shell">
 
-    <div class="app">
-
-        <aside class="sidebar">
-            <h2>BugTrack <span>Lite</span></h2>
-
-            <nav>
-                <a href="/" class="active">Dashboard</a>
-                <a href="#">All Issues</a>
-                <a href="#">My Issues</a>
-                <a href="#">Projects</a>
-                <a href="#">Settings</a>
-            </nav>
-
-            <div class="sidebar-bottom">
-                Software Bug Tracking System
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-mark">B</span>
+            <div>
+                <strong>BugTrack</strong>
+                <small>LITE</small>
             </div>
-        </aside>
+        </div>
 
-        <main class="main-content">
+        <div class="nav-label">WORKSPACE</div>
 
-            <header class="topbar">
+        <a class="nav-item active" href="/">
+            <span>▦</span>
+            Dashboard
+        </a>
+
+        <div class="sidebar-bottom">
+            <div class="avatar">Y</div>
+            <div>
+                <b>You</b>
+                <small>Workspace member</small>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <span class="eyebrow">WORKSPACE / OVERVIEW</span>
+                <h1>Issue Dashboard</h1>
+                <p>Track, prioritize, and resolve issues across your projects.</p>
+            </div>
+
+            <button class="primary-btn" id="open-create">
+                ＋ Report issue
+            </button>
+        </header>
+
+        <section class="stats-grid">
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>Total issues</span>
+                    <span class="stat-icon">▤</span>
+                </div>
+                <strong>{{ stats.total }}</strong>
+                <small>All reported issues</small>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>Open</span>
+                    <span class="stat-icon orange">◷</span>
+                </div>
+                <strong>{{ stats.open }}</strong>
+                <small>Need attention</small>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>In progress</span>
+                    <span class="stat-icon blue">↻</span>
+                </div>
+                <strong>{{ stats.progress }}</strong>
+                <small>Being worked on</small>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>Resolved</span>
+                    <span class="stat-icon green">✓</span>
+                </div>
+                <strong>{{ stats.resolved }}</strong>
+                <small>Successfully closed</small>
+            </article>
+
+        </section>
+
+        <section class="issues-panel">
+
+            <div class="panel-heading">
                 <div>
-                    <h1>Dashboard</h1>
-                    <p>Welcome back! Here's your project overview.</p>
+                    <h2>All issues</h2>
+                    <p>Manage and monitor reported bugs.</p>
                 </div>
 
-                <button class="report-btn">
-                    + Report Bug
+                <span class="count-pill">
+                    {{ bugs|length }} shown
+                </span>
+            </div>
+
+            <form class="filters" method="get">
+
+                <label class="search-box">
+                    <span>⌕</span>
+                    <input
+                        name="search"
+                        value="{{ filters.search }}"
+                        placeholder="Search issues, projects, assignees..."
+                    >
+                </label>
+
+                <select name="status">
+                    <option value="">All statuses</option>
+
+                    {% for s in statuses %}
+                    <option
+                        value="{{ s }}"
+                        {% if filters.status == s %}selected{% endif %}
+                    >
+                        {{ s }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <select name="severity">
+                    <option value="">All severity</option>
+
+                    {% for s in severities %}
+                    <option
+                        value="{{ s }}"
+                        {% if filters.severity == s %}selected{% endif %}
+                    >
+                        {{ s }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <select name="project">
+                    <option value="">All projects</option>
+
+                    {% for p in projects %}
+                    <option
+                        value="{{ p }}"
+                        {% if filters.project == p %}selected{% endif %}
+                    >
+                        {{ p }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <select name="sort">
+                    <option
+                        value="newest"
+                        {% if filters.sort == "newest" %}selected{% endif %}
+                    >
+                        Newest first
+                    </option>
+
+                    <option
+                        value="oldest"
+                        {% if filters.sort == "oldest" %}selected{% endif %}
+                    >
+                        Oldest first
+                    </option>
+
+                    <option
+                        value="updated"
+                        {% if filters.sort == "updated" %}selected{% endif %}
+                    >
+                        Recently updated
+                    </option>
+
+                    <option
+                        value="title"
+                        {% if filters.sort == "title" %}selected{% endif %}
+                    >
+                        Title A–Z
+                    </option>
+
+                    <option
+                        value="severity"
+                        {% if filters.sort == "severity" %}selected{% endif %}
+                    >
+                        Severity
+                    </option>
+                </select>
+
+                <button class="filter-btn" type="submit">
+                    Apply
                 </button>
-            </header>
 
-            <section class="stats">
+                <a class="reset-btn" href="/">Reset</a>
 
-                <div class="stat-card">
-                    <p>Total Issues</p>
-                    <h2>24</h2>
-                    <span>Across all projects</span>
-                </div>
+            </form>
 
-                <div class="stat-card">
-                    <p>Open Issues</p>
-                    <h2>10</h2>
-                    <span>Needs attention</span>
-                </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ISSUE</th>
+                            <th>PROJECT</th>
+                            <th>SEVERITY</th>
+                            <th>ASSIGNEE</th>
+                            <th>STATUS</th>
+                            <th>UPDATED</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
 
-                <div class="stat-card">
-                    <p>In Progress</p>
-                    <h2>8</h2>
-                    <span>Currently being fixed</span>
-                </div>
+                    <tbody>
 
-                <div class="stat-card">
-                    <p>Resolved</p>
-                    <h2>6</h2>
-                    <span>Successfully fixed</span>
-                </div>
+                    {% for bug in bugs %}
+                    <tr data-id="{{ bug.id }}">
 
-            </section>
+                        <td>
+                            <button
+                                class="issue-link"
+                                data-action="view"
+                            >
+                                #{{ bug.id }} {{ bug.title }}
+                            </button>
 
-            <section class="issues-section">
+                            <small class="issue-sub">
+                                {{ bug.description|truncate(75) }}
+                            </small>
+                        </td>
 
-                <div class="section-header">
-                    <div>
-                        <h2>Recent Issues</h2>
-                        <p>Latest reported software bugs</p>
-                    </div>
+                        <td>{{ bug.project }}</td>
 
-                    <button class="filter-btn">
-                        Filter Issues
-                    </button>
-                </div>
+                        <td>
+                            <span class="severity {{ bug.severity|lower }}">
+                                {{ bug.severity }}
+                            </span>
+                        </td>
 
-                <div class="table-container">
+                        <td>
+                            {{ bug.assigned_to or "Unassigned" }}
+                        </td>
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Issue</th>
-                                <th>Project</th>
-                                <th>Severity</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
+                        <td>
+                            <select
+                                class="status-select {{ bug.status|lower|replace(' ', '-') }}"
+                                data-action="status"
+                            >
+                                {% for s in statuses %}
+                                <option
+                                    value="{{ s }}"
+                                    {% if bug.status == s %}selected{% endif %}
+                                >
+                                    {{ s }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </td>
 
-                        <tbody>
-                            {% for bug in bugs %}
-                            <tr>
-                                <td>
-                                    <strong>#{{ bug.id }}</strong>
-                                    {{ bug.title }}
-                                </td>
+                        <td class="date-cell">
+                            {{ bug.updated_at }}
+                        </td>
 
-                                <td>{{ bug.project }}</td>
+                        <td class="actions">
+                            <button data-action="view">View</button>
+                            <button data-action="edit">Edit</button>
+                            <button
+                                data-action="delete"
+                                class="delete-btn"
+                            >
+                                Delete
+                            </button>
+                        </td>
 
-                                <td>
-                                    <span class="severity {{ bug.severity|lower }}">
-                                        {{ bug.severity }}
-                                    </span>
-                                </td>
+                    </tr>
 
-                                <td>
-                                    <span class="status {{ bug.status|lower|replace(' ', '-') }}">
-                                        {{ bug.status }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <div>◇</div>
 
-                    </table>
+                            <strong>No issues found</strong>
 
-                </div>
+                            <p>
+                                Try changing your filters or report a new issue.
+                            </p>
 
-            </section>
+                            <button
+                                class="primary-btn"
+                                id="empty-create"
+                            >
+                                ＋ Report issue
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
 
-            <footer>
-                BugTrack Lite © 2026
-            </footer>
+                    </tbody>
+                </table>
+            </div>
 
-        </main>
+        </section>
 
-    </div>
+        <footer>
+            BugTrack Lite
+            <span>•</span>
+            Simple issue tracking for focused teams
+        </footer>
+
+    </main>
+</div>
+
+
+<!-- Create / Edit Issue Modal -->
+
+<div
+    class="modal-backdrop"
+    id="issue-modal"
+    aria-hidden="true"
+>
+    <section class="modal">
+
+        <div class="modal-header">
+            <div>
+                <span class="eyebrow" id="modal-eyebrow">
+                    NEW ISSUE
+                </span>
+
+                <h2 id="modal-title">Report an issue</h2>
+            </div>
+
+            <button class="close-btn" data-close>×</button>
+        </div>
+
+        <form id="issue-form">
+
+            <input type="hidden" id="bug-id">
+
+            <label>
+                Issue title
+
+                <input
+                    id="title"
+                    required
+                    maxlength="160"
+                    placeholder="Briefly describe the issue"
+                >
+            </label>
+
+            <label>
+                Description
+
+                <textarea
+                    id="description"
+                    required
+                    rows="4"
+                    placeholder="Steps to reproduce, expected behavior, etc."
+                ></textarea>
+            </label>
+
+            <div class="form-row">
+
+                <label>
+                    Project
+
+                    <input
+                        id="project"
+                        required
+                        placeholder="e.g. Website"
+                    >
+                </label>
+
+                <label>
+                    Severity
+
+                    <select id="severity" required>
+                        {% for s in severities %}
+                        <option>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+            </div>
+
+            <label>
+                Assigned to
+
+                <input
+                    id="assigned-to"
+                    placeholder="Name (optional)"
+                >
+            </label>
+
+            <div class="modal-actions">
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    data-close
+                >
+                    Cancel
+                </button>
+
+                <button
+                    class="primary-btn"
+                    type="submit"
+                    id="save-btn"
+                >
+                    Create issue
+                </button>
+            </div>
+
+        </form>
+
+    </section>
+</div>
+
+
+<!-- Issue Details Modal -->
+
+<div
+    class="modal-backdrop"
+    id="detail-modal"
+    aria-hidden="true"
+>
+    <section class="modal detail-modal">
+
+        <div class="modal-header">
+            <div>
+                <span class="eyebrow">ISSUE DETAILS</span>
+                <h2 id="detail-title">Issue</h2>
+            </div>
+
+            <button class="close-btn" data-close>×</button>
+        </div>
+
+        <div id="detail-content"></div>
+
+    </section>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 
 </body>
 </html>
