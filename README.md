@@ -190,7 +190,7 @@ Potential improvements for future versions include:
 
 - **Shreyansh Raj Singh**
 - **Avaneesh Verma**
-- **Roshan**
+- **Roshan Karthik Taninki**
 
 GitHub: [@iit2025215-glitch](https://github.com/iit2025215-glitch)
 
